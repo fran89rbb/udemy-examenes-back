@@ -1,5 +1,6 @@
 package com.microservicios.app.alumnos.models.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,13 @@ public class AlumnoServiceImpl implements IAlumnoService {
 	public void deleteById(Long id) {
 		alumnoRepository.deleteById(id);
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Alumno> findByNombreOrApellido(String term) {
+		// TODO Auto-generated method stub
+		return alumnoRepository.findByNombreOrApellido(term);
 	}
 
 }

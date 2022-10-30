@@ -67,5 +67,10 @@ public class AlumnoController {
 		alumnoService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/filtrar/{term}")
+	public ResponseEntity<?> filtrar(@PathVariable String term){
+		return ResponseEntity.ok(alumnoService.findByNombreOrApellido(term));
+	}
 
 }
