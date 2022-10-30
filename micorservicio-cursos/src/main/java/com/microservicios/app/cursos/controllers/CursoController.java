@@ -102,5 +102,12 @@ public class CursoController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoDb));
 	}
+	
+	@GetMapping("/alumno/{id}")
+	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id){
+		Curso curso = cursoService.findCursoByAlumnoId(id);
+		
+		return ResponseEntity.ok(curso);
+	}
 
 }

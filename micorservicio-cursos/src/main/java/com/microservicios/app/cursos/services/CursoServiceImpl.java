@@ -38,4 +38,10 @@ public class CursoServiceImpl implements ICursoService{
 		
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Curso findCursoByAlumnoId(Long id) {
+		return cursoRepository.findCursoByAlumnoId(id);
+	}
+
 }
