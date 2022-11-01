@@ -1,10 +1,15 @@
 package com.microservicios.app.alumnos.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,14 +44,22 @@ public class AlumnoController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> crear(@RequestBody Alumno alumno){
+	public ResponseEntity<?> crear(@Valid @RequestBody Alumno alumno, BindingResult result){
+		
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
 		
 		Alumno alumnoBd = alumnoService.save(alumno);
 		return ResponseEntity.status(HttpStatus.CREATED).body(alumnoBd);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@RequestBody Alumno alumno, @PathVariable Long id){
+	public ResponseEntity<?> editar(@Valid @RequestBody Alumno alumno, BindingResult result, @PathVariable Long id){
+		
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
 		
 		Optional<Alumno> alumnoDb = alumnoService.findById(id);
 		
@@ -71,6 +84,15 @@ public class AlumnoController {
 	@GetMapping("/filtrar/{term}")
 	public ResponseEntity<?> filtrar(@PathVariable String term){
 		return ResponseEntity.ok(alumnoService.findByNombreOrApellido(term));
+	}
+	
+	public ResponseEntity<?> validar(BindingResult result){
+		Map<String, Object> errores = new HashMap<>();
+		result.getFieldErrors().forEach(err -> {
+			errores.put(err.getField(), "El campo " +err.getField()+ " " +err.getDefaultMessage());
+		});
+		
+		return ResponseEntity.badRequest().body(errores);
 	}
 
 }

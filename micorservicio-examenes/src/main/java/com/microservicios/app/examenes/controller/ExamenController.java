@@ -1,12 +1,17 @@
 package com.microservicios.app.examenes.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +47,11 @@ public class ExamenController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> crear(@RequestBody Examen examen){
+	public ResponseEntity<?> crear(@Valid @RequestBody Examen examen, BindingResult result){
+		
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
 		
 		Examen examenBd = examenService.save(examen);
 		return ResponseEntity.status(HttpStatus.CREATED).body(examenBd);
@@ -55,7 +64,12 @@ public class ExamenController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@RequestBody Examen examen, @PathVariable Long id){
+	public ResponseEntity<?> editar(@Valid @RequestBody Examen examen, BindingResult result, @PathVariable Long id){
+		
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		
 		Optional<Examen> examenOpt = examenService.findById(id);
 		
 		if(!examenOpt.isPresent()) {
@@ -85,5 +99,14 @@ public class ExamenController {
 	@GetMapping("/asignaturas")
 	public ResponseEntity<?> listarAsignaturas(){
 		return ResponseEntity.ok().body(examenService.findAllAsignaturas());
+	}
+	
+	public ResponseEntity<?> validar(BindingResult result){
+		Map<String, Object> errores = new HashMap<>();
+		result.getFieldErrors().forEach(err -> {
+			errores.put(err.getField(), "El campo " +err.getField()+ " " +err.getDefaultMessage());
+		});
+		
+		return ResponseEntity.badRequest().body(errores);
 	}
 }
