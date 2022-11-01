@@ -36,7 +36,7 @@ public class Examen {
 	@JsonIgnoreProperties(value = { "examen" }, allowSetters = true)
 	@OneToMany(mappedBy = "examen", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pregunta> preguntas;
-	
+
 	public Examen() {
 		this.preguntas = new ArrayList<>();
 	}
@@ -78,7 +78,7 @@ public class Examen {
 		this.preguntas.clear();
 		preguntas.forEach(p -> this.addPregunta(p));
 	}
-	
+
 	public void addPregunta(Pregunta pregunta) {
 		this.preguntas.add(pregunta);
 		pregunta.setExamen(this);
@@ -87,6 +87,21 @@ public class Examen {
 	public void removePregunta(Pregunta pregunta) {
 		this.preguntas.remove(pregunta);
 		pregunta.setExamen(null);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Examen)) {
+			return false;
+		}
+
+		Examen e = (Examen) obj;
+
+		return this.id != null && this.id.equals(e.getId());
 	}
 
 }

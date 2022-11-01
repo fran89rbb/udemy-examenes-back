@@ -76,4 +76,9 @@ public class ExamenController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(examenService.save(examenDb));
 	}
+	
+	@GetMapping("filtrar/{term}")
+	public ResponseEntity<?> filtrar(@PathVariable String term){
+		return ResponseEntity.ok(examenService.findByNombre(term));
+	}
 }

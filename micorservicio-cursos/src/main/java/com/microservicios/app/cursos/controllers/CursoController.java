@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microservicios.app.alumnos.models.entity.Alumno;
 import com.microservicios.app.cursos.models.entity.Curso;
 import com.microservicios.app.cursos.services.ICursoService;
+import com.microservicios.app.examenes.models.entity.Examen;
 
 @RestController
 public class CursoController {
@@ -109,5 +110,34 @@ public class CursoController {
 		
 		return ResponseEntity.ok(curso);
 	}
+	
+	
+	//----------RELACION CON EXAMENES----------
+	@PutMapping("/{id}/asignar-examenes")
+	public ResponseEntity<?> asignarExamenes(@RequestBody List<Examen> examenes, @PathVariable Long id){
+		Optional<Curso> cursoDb = cursoService.findById(id);
+		
+		if(!cursoDb.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		Curso cursoUpdate = cursoDb.get();
+		examenes.forEach(e -> cursoUpdate.addExamen(e));
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoUpdate));
+	}
 
+	@PutMapping("/{id}/eliminar-examen")
+	public ResponseEntity<?> eliminarExamen(@RequestBody Examen examen, @PathVariable Long id){
+		Optional<Curso> cursoDb = cursoService.findById(id);
+		
+		if(!cursoDb.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		Curso cursoUpdate = cursoDb.get();
+		cursoUpdate.removeExamen(examen);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoUpdate));
+	}
 }
