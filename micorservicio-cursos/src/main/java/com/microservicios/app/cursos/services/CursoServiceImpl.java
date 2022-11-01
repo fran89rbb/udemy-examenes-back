@@ -3,6 +3,8 @@ package com.microservicios.app.cursos.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,11 @@ public class CursoServiceImpl implements ICursoService{
 	@Transactional(readOnly = true)
 	public Curso findCursoByAlumnoId(Long id) {
 		return cursoRepository.findCursoByAlumnoId(id);
+	}
+
+	@Override
+	public Page<Curso> findAll(Pageable pageable) {
+		return cursoRepository.findAll(pageable);
 	}
 
 }
