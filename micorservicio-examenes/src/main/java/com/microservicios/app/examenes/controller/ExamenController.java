@@ -81,4 +81,9 @@ public class ExamenController {
 	public ResponseEntity<?> filtrar(@PathVariable String term){
 		return ResponseEntity.ok(examenService.findByNombre(term));
 	}
+	
+	@GetMapping("/asignaturas")
+	public ResponseEntity<?> listarAsignaturas(){
+		return ResponseEntity.ok().body(examenService.findAllAsignaturas());
+	}
 }

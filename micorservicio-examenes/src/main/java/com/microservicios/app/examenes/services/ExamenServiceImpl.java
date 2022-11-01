@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.microservicios.app.examenes.models.entity.Asignatura;
 import com.microservicios.app.examenes.models.entity.Examen;
+import com.microservicios.app.examenes.models.repository.IAsignaturaRepository;
 import com.microservicios.app.examenes.models.repository.IExamenRepository;
 
 @Service
@@ -15,6 +17,9 @@ public class ExamenServiceImpl implements IExamenService{
 	
 	@Autowired
 	private IExamenRepository examenRepository;
+	
+	@Autowired
+	private IAsignaturaRepository asignaturaRepository;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -43,6 +48,12 @@ public class ExamenServiceImpl implements IExamenService{
 	@Transactional(readOnly = true)
 	public List<Examen> findByNombre(String term) {
 		return examenRepository.findByNombre(term);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Asignatura> findAllAsignaturas() {
+		return asignaturaRepository.findAll();
 	}
 
 }
