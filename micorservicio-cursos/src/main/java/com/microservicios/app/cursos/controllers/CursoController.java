@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -126,6 +127,19 @@ public class CursoController {
 	@GetMapping("/alumno/{id}")
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id){
 		Curso curso = cursoService.findCursoByAlumnoId(id);
+		
+		if(curso != null) {
+			List<Long> examenesId = (List<Long>) cursoService.obtenerExamenesIdsConRespuestaByAlumno(id);
+			
+			List<Examen> examenes = curso.getExamenes().stream().map(examen -> {
+				if(examenesId.contains(examen.getId())){
+					examen.setRespondido(true);
+				}
+				return examen;
+			}).collect(Collectors.toList());
+			
+			curso.setExamenes(examenes);
+		}
 		
 		return ResponseEntity.ok(curso);
 	}

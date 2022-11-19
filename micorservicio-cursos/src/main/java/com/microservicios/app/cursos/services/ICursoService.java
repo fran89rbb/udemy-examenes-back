@@ -21,5 +21,7 @@ public interface ICursoService {
 	void deleteById(Long id);
 	
 	Curso findCursoByAlumnoId(Long id);
+	
+	Iterable<Long> obtenerExamenesIdsConRespuestaByAlumno(Long alumnoId);
 
 }

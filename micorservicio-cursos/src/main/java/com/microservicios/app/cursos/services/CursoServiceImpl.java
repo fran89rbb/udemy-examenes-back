@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.microservicios.app.cursos.clients.IRespuestaFeignClients;
 import com.microservicios.app.cursos.models.entity.Curso;
 import com.microservicios.app.cursos.models.repository.ICursoRepository;
 
@@ -17,6 +18,9 @@ public class CursoServiceImpl implements ICursoService{
 	@Autowired
 	private ICursoRepository cursoRepository;
 
+	@Autowired
+	private IRespuestaFeignClients client;
+	
 	@Override
 	@Transactional(readOnly = true)
 	public Iterable<Curso> findAll() {
@@ -49,6 +53,11 @@ public class CursoServiceImpl implements ICursoService{
 	@Override
 	public Page<Curso> findAll(Pageable pageable) {
 		return cursoRepository.findAll(pageable);
+	}
+
+	@Override
+	public Iterable<Long> obtenerExamenesIdsConRespuestaByAlumno(Long alumnoId) {
+		return client.obtenerExamenesIdsConRespuestaByAlumno(alumnoId);
 	}
 
 }
