@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.microservicios.app.alumnos.models.entity.Alumno;
 import com.microservicios.app.cursos.models.entity.Curso;
+import com.microservicios.app.cursos.models.entity.CursoAlumno;
 import com.microservicios.app.cursos.services.ICursoService;
 import com.microservicios.app.examenes.models.entity.Examen;
 
@@ -32,9 +33,23 @@ public class CursoController {
 	@Autowired
 	private ICursoService cursoService;
 	
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<?> listar(){
 		return ResponseEntity.ok().body(cursoService.findAll());
+	}*/
+	
+	@GetMapping
+	public ResponseEntity<?> listar() {
+		List<Curso> cursos = ((List<Curso>) cursoService.findAll()).stream().map(c -> {
+			c.getCursoAlumnos().forEach(ca -> {
+				Alumno alumno = new Alumno();
+				alumno.setId(ca.getAlumnoId());
+				c.addAlumno(alumno);
+			});
+			return c;
+		}).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(cursos);
 	}
 	
 	@GetMapping("/pagina")
@@ -102,7 +117,10 @@ public class CursoController {
 		Curso cursoDb = cursoOpt.get();
 		
 		alumnos.forEach(a -> {
-			cursoDb.addAlumno(a);
+			CursoAlumno cursoAlumno = new CursoAlumno();
+			cursoAlumno.setAlumnoId(a.getId());
+			cursoAlumno.setCurso(cursoDb);
+			cursoDb.addCursoAlumnos(cursoAlumno);
 		});
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoDb));
@@ -119,7 +137,9 @@ public class CursoController {
 		
 		Curso cursoDb = cursoOpt.get();
 		
-		cursoDb.removeAlumno(alumno);
+		CursoAlumno cursoAlumno = new CursoAlumno();
+		cursoAlumno.setAlumnoId(alumno.getId());
+		cursoDb.removeCursoAlumnos(cursoAlumno);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoDb));
 	}
