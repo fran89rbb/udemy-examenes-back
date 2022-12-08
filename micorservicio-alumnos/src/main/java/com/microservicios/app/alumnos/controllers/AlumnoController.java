@@ -146,6 +146,11 @@ public class AlumnoController {
 		return ResponseEntity.ok(alumnoService.findByNombreOrApellido(term));
 	}
 	
+	@GetMapping("/alumnos-por-curso")
+	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam Iterable<Long> ids){
+		return ResponseEntity.ok(alumnoService.findAllById(ids));
+	}
+	
 	public ResponseEntity<?> validar(BindingResult result){
 		Map<String, Object> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {

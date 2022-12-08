@@ -44,13 +44,18 @@ public class AlumnoServiceImpl implements IAlumnoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Alumno> findByNombreOrApellido(String term) {
-		// TODO Auto-generated method stub
 		return alumnoRepository.findByNombreOrApellido(term);
 	}
 
 	@Override
 	public Page<Alumno> findAll(Pageable pageable) {
 		return alumnoRepository.findAll(pageable);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Iterable<Alumno> findAllById(Iterable<Long> ids) {
+		return alumnoRepository.findAllById(ids);
 	}
 
 }

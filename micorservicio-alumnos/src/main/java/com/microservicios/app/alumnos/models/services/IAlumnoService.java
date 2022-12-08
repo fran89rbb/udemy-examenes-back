@@ -21,5 +21,7 @@ public interface IAlumnoService {
 	void deleteById(Long id);
 	
 	List<Alumno> findByNombreOrApellido(String term);
+	
+	Iterable<Alumno> findAllById(Iterable<Long> ids);
 
 }
