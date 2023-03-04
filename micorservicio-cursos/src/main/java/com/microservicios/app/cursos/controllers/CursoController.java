@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,12 +53,26 @@ public class CursoController {
 		return ResponseEntity.ok().body(cursos);
 	}
 	
-	@GetMapping("/pagina")
+	/*@GetMapping("/pagina")
 	public ResponseEntity<?> listar(Pageable pageable){
 		return ResponseEntity.ok().body(cursoService.findAll(pageable));
+	}*/
+	
+	@GetMapping("/pagina")
+	public ResponseEntity<?> listar(Pageable pageable){
+		Page<Curso> cursos = cursoService.findAll(pageable).map(curso -> {
+			curso.getCursoAlumnos().forEach(ca -> {
+				Alumno alumno = new Alumno();
+				alumno.setId(ca.getAlumnoId());
+				curso.addAlumno(alumno);
+			});
+			return curso;
+		});
+		
+		return ResponseEntity.ok().body(cursos);
 	}
 	
-	@GetMapping("/{id}")
+	/*@GetMapping("/{id}")
 	public ResponseEntity<?> ver(@PathVariable Long id){
 		Optional<Curso> curso = cursoService.findById(id);
 		
@@ -66,6 +81,27 @@ public class CursoController {
 		}
 		
 		return ResponseEntity.ok().body(curso.get());
+	}*/
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> ver(@PathVariable Long id){
+		Optional<Curso> cursoOpt = cursoService.findById(id);
+		
+		if(cursoOpt.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		Curso curso = cursoOpt.get();
+		
+		if(curso.getCursoAlumnos().isEmpty() == false) {
+			List<Long> ids = curso.getCursoAlumnos().stream().map(ca -> ca.getAlumnoId()).collect(Collectors.toList());
+			
+			List<Alumno> alumnos = (List<Alumno>) cursoService.obtenerAlumnosPorCurso(ids);
+			
+			curso.setAlumnos(alumnos);
+		}
+		
+		return ResponseEntity.ok().body(curso);
 	}
 	
 	@PostMapping

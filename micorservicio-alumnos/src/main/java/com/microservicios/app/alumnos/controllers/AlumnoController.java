@@ -2,6 +2,7 @@ package com.microservicios.app.alumnos.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -147,7 +148,7 @@ public class AlumnoController {
 	}
 	
 	@GetMapping("/alumnos-por-curso")
-	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam Iterable<Long> ids){
+	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> ids){
 		return ResponseEntity.ok(alumnoService.findAllById(ids));
 	}
 	
