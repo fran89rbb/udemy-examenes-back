@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.microservicios.app.alumnos.models.entity.Alumno;
 import com.microservicios.app.cursos.models.entity.Curso;
@@ -26,6 +25,8 @@ public interface ICursoService {
 	
 	Iterable<Long> obtenerExamenesIdsConRespuestaByAlumno(Long alumnoId);
 	
-	Iterable<Alumno> obtenerAlumnosPorCurso(@RequestParam Iterable<Long> ids);
+	Iterable<Alumno> obtenerAlumnosPorCurso(Iterable<Long> ids);
+	
+	void eliminarCursoAlumnoPorId(Long id);
 
 }

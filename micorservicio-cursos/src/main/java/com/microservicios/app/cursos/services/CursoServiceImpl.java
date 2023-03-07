@@ -70,4 +70,10 @@ public class CursoServiceImpl implements ICursoService{
 		return clientAlumno.obtenerAlumnosPorCurso(ids);
 	}
 
+	@Override
+	@Transactional
+	public void eliminarCursoAlumnoPorId(Long id) {
+		cursoRepository.eliminarCursoAlumnoPorId(id);
+	}
+
 }

@@ -180,6 +180,12 @@ public class CursoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoDb));
 	}
 	
+	@DeleteMapping("/eliminar-alumno/{id}")
+	public ResponseEntity<?> eliminarCursoAlumnoPorId(@PathVariable Long id){
+		cursoService.eliminarCursoAlumnoPorId(id);
+		return ResponseEntity.noContent().build();
+	}
+	
 	@GetMapping("/alumno/{id}")
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id){
 		Curso curso = cursoService.findCursoByAlumnoId(id);

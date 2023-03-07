@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.microservicios.app.alumnos.client.ICursoFeignClient;
 import com.microservicios.app.alumnos.models.entity.Alumno;
 import com.microservicios.app.alumnos.models.repository.IAlumnoRepository;
 
@@ -17,6 +18,9 @@ public class AlumnoServiceImpl implements IAlumnoService {
 	
 	@Autowired
 	private IAlumnoRepository alumnoRepository;
+	
+	@Autowired
+	private ICursoFeignClient clientCurso;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -38,7 +42,7 @@ public class AlumnoServiceImpl implements IAlumnoService {
 	@Override
 	public void deleteById(Long id) {
 		alumnoRepository.deleteById(id);
-
+		this.eliminarCursoAlumnoPorId(id);
 	}
 
 	@Override
@@ -56,6 +60,11 @@ public class AlumnoServiceImpl implements IAlumnoService {
 	@Transactional(readOnly = true)
 	public Iterable<Alumno> findAllById(Iterable<Long> ids) {
 		return alumnoRepository.findAllById(ids);
+	}
+
+	@Override
+	public void eliminarCursoAlumnoPorId(Long id) {
+		clientCurso.eliminarCursoAlumnoPorId(id);
 	}
 
 }
